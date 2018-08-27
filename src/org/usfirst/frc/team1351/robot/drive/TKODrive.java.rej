@@ -1,0 +1,10 @@
+diff a/src/org/usfirst/frc/team1351/robot/drive/TKODrive.java b/src/org/usfirst/frc/team1351/robot/drive/TKODrive.java	(rejected hunks)
+@@ -29,7 +29,7 @@
+ 		talon3 = new TalonSRX(0);
+ 		talon4 = new TalonSRX(3);
+ 		controller = new XboxController(0);
+-		
++		solenoid = new DoubleSolenoid(0, 1);
+ 	}
+ 	
+ 	public void autonomous() {

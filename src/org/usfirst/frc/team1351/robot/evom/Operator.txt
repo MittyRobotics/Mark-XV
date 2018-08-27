@@ -1,0 +1,37 @@
+Last edited by Tiina Otala
+3/26/2018
+
+XBOX - ID 0
+Left Joystick: Left side tank drive
+Right Joystick: Right side tank drive
+Left Trigger: Reverse while held
+Right Trigger: Low gear 
+X Button + A Button: Shimmy (now watch me whip, now watch me naenae) 
+
+LEFT STICK (intake) - ID 0 of joysticks
+Trigger: Arms close (60 psi)
+Button 2: Intake
+Button 3: Outtake + soft close
+Button 4: Arms open (40 psi)
+Button 5: Arms hard close (60 psi)
+Button 6: ---
+Button 7: Arms open backup (40 psi)
+Button 8: Arms up
+Button 9: Arms down
+Button 10: ---
+Button 11: ---
+
+RIGHT STICK (lift/winch) - ID 1 of joysticks
+Trigger: Activate manual lift in joystick
+Button 2: Lift to ground height (home switch - 2")
+Button 3: Lift to scale height (84")
+Button 4: Lift to switch height (48")
+Button 5: Lift to portal height (24")
+Button 6: Winch in reverse speed (to unravel pre-match)
+Button 7: Winch with ratchet
+Button 8: ---
+Button 9: ---
+Button 10: Winch in slow speed
+Button 11: Winch in fast speed
+
+Removed:  Intake sequence (close, intake, lift up cube. switch stops sequence)

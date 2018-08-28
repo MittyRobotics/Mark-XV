@@ -4,30 +4,24 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team1351.robot.Definitions;
-import org.usfirst.frc.team1351.robot.Definitions.DInput;
 import org.usfirst.frc.team1351.robot.Definitions.DSolenoid;
 import org.usfirst.frc.team1351.robot.util.TKOHardware;
 import org.usfirst.frc.team1351.robot.util.TKOThread;
+
 //add hard hold button
 public class TKOIntake implements Runnable // implements Runnable is important
 // to make this class support the
 // Thread (run method)
 
 {
+	private static TKOIntake m_Instance = null;
 	/*
 	 * This creates an object of the TKOThread class, passing it the runnable of
 	 * this class (TKOIntake) TKOThread is just a thread that makes it easy to make
 	 * using the thread safe
 	 */
 	public TKOThread intakeThread = null;
-	private static TKOIntake m_Instance = null;
 	private int sergey;
-
-	// Typical constructor made protected so that this class is only accessed
-	// statically, though that doesn't matter
-	protected TKOIntake() {
-
-	}
 
 	public static synchronized TKOIntake getInstance() {
 		if (m_Instance == null) {
@@ -59,7 +53,7 @@ public class TKOIntake implements Runnable // implements Runnable is important
 	public void run() {
 		try {
 			while (intakeThread.isThreadRunning()) {
-				
+
 				sergey = 1;
 				if (TKOHardware.getJoystick(0).getRawButton(2)) { // Intake
 					TKOHardware.getIntakeTalon(0).set(ControlMode.PercentOutput, SmartDashboard.getNumber("Left Intake Speed", Definitions.INTAKE_LEFT_SPEED));
@@ -72,7 +66,7 @@ public class TKOIntake implements Runnable // implements Runnable is important
 				} else {
 					sergey--;
 				}
-				
+
 				if (TKOHardware.getJoystick(0).getTrigger()) { //Intake Sequence
 					/*
 					TKOHardware.setArmsSoftHold();
@@ -85,16 +79,16 @@ public class TKOIntake implements Runnable // implements Runnable is important
 				} else if (TKOHardware.getJoystick(0).getRawButton(5)) { //arms close @ 60 psi
 					TKOHardware.setArmsHardHold();
 				}
-				
+
 				if (TKOHardware.getJoystick(0).getRawButton(8)) { //arms up
 					TKOHardware.getDSolenoid(DSolenoid.UPDOWN).set(Value.kForward);
 				} else if (TKOHardware.getJoystick(0).getRawButton(9)) { //arms down
 					TKOHardware.getDSolenoid(DSolenoid.UPDOWN).set(Value.kReverse);
 				}
-				
+
 				intakeDriverAddition();
 				System.out.println("sergey:" + sergey);
-				
+
 				//disable if by : preference (sergey), current limit, limit switch
 				if (sergey == 0 || TKOHardware.getIntakeTalon(0).getOutputCurrent() > 20 || TKOHardware.getIntakeTalon(1).getOutputCurrent() > 20) {
 					TKOHardware.getIntakeTalon(0).set(ControlMode.PercentOutput, 0);
@@ -102,10 +96,10 @@ public class TKOIntake implements Runnable // implements Runnable is important
 				}
 
 				synchronized (intakeThread) // synchronized per the thread to
-											// make sure that we wait safely
+				// make sure that we wait safely
 				{
 					intakeThread.wait(100); // the wait time that the thread
-											// sleeps, in milliseconds
+					// sleeps, in milliseconds
 				}
 			}
 		} catch (Exception e) {
@@ -113,8 +107,7 @@ public class TKOIntake implements Runnable // implements Runnable is important
 		}
 	}
 
-	private void intakeDriverAddition()
-	{
+	private void intakeDriverAddition() {
 		try {
 			sergey--;
 			if (TKOHardware.getXboxController().getAButton()) { // Intake
@@ -130,7 +123,7 @@ public class TKOIntake implements Runnable // implements Runnable is important
 			if (TKOHardware.getXboxController().getPOV() == 90) { //hard hold
 				TKOHardware.setArmsHardHold();
 			} else if (TKOHardware.getXboxController().getPOV() == 270) {
-				
+
 				TKOHardware.setArmsRelease();
 			} else if (TKOHardware.getXboxController().getPOV() == 180) { //arms close @ 20 psi
 				TKOHardware.setArmsSoftHold();

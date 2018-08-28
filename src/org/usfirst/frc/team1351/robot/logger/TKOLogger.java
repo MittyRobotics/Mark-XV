@@ -3,26 +3,29 @@ package org.usfirst.frc.team1351.robot.logger;
 import org.usfirst.frc.team1351.robot.Definitions;
 import org.usfirst.frc.team1351.robot.util.TKOThread;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class TKOLogger implements Runnable
-{
+public class TKOLogger implements Runnable {
+	private static TKOLogger m_Instance = null;
+	private TKOThread loggerThread = null;
+	private long startTime;
 	private ConcurrentLinkedQueue<String> m_MessageBuffer = new ConcurrentLinkedQueue<String>();
 	private ConcurrentLinkedQueue<String> m_DataBuffer = new ConcurrentLinkedQueue<String>();
 	private PrintWriter m_LogFile, m_DataLogFile;
-	private static TKOLogger m_Instance = null;
-	public TKOThread loggerThread = null;
 	private String directory = "/home/lvuser/"; // TODO fix this
 	private String logFileName = "log";
 	private String dataDumpFileName = "data";
-	public long startTime;
-	public long dataBufferSize = 0;
 
 	// private long writeCounter = 0;
 
-	protected TKOLogger()
-	{
+	private TKOLogger() {
 		System.out.println("Contstructing logger");
 		addMessage("roboRIO LOGGER INITIALIZED AT: " + (System.nanoTime() / 1000000000));
 		startTime = System.nanoTime();
@@ -31,8 +34,7 @@ public class TKOLogger implements Runnable
 		{
 			int i = 1;
 			File test = null;
-			do
-			{
+			do {
 				test = new File(directory + logFileName + "_" + i + ".txt");
 				i++;
 			} while (test.exists() && !test.isDirectory());
@@ -44,8 +46,7 @@ public class TKOLogger implements Runnable
 		{
 			int i = 1;
 			File test = null;
-			do
-			{
+			do {
 				test = new File(directory + dataDumpFileName + "_" + i + ".csv");
 				i++;
 			} while (test.exists() && !test.isDirectory());
@@ -54,66 +55,53 @@ public class TKOLogger implements Runnable
 		System.out.println("Done constructing logger");
 	}
 
-	public static synchronized TKOLogger getInstance()
-	{
-		if (TKOLogger.m_Instance == null)
-		{
+	public static synchronized TKOLogger getInstance() {
+		if (TKOLogger.m_Instance == null) {
 			m_Instance = new TKOLogger();
 			m_Instance.loggerThread = new TKOThread(m_Instance);
 		}
 		return m_Instance;
 	}
 
-	public void addMessage(String message)
-	{
+	public void addMessage(String message) {
 		// String str = "Time: " + DriverStation.getInstance().getMatchTime() + ";Message: " + message;
 		System.out.println(message);
 		String str = "Time(s): " + ((System.nanoTime() - startTime) / 1000000000) + " Message:" + message;
 		m_MessageBuffer.add(str);
 	}
 
-	public void addMessage(String format, Object... args)
-	{
+	public void addMessage(String format, Object... args) {
 		m_MessageBuffer.add(String.format(format, args));
 	}
 
-	public void addData(String dataType, double value, String additionalComment, int motor)
-	{
+	public void addData(String dataType, double value, String additionalComment, int motor) {
 		if (additionalComment == null)
-			additionalComment = new String();
+			additionalComment = "";
 		String sep = ",";
 		String str = dataType + sep + (System.nanoTime() - startTime) + sep + value + sep + additionalComment + sep + motor;
 		m_DataBuffer.add(str);
-		dataBufferSize++;
 	}
 
-	public void start()
-	{
+	public void start() {
 		System.out.println("Starting logger task");
-		if (!loggerThread.isAlive() && m_Instance != null)
-		{
+		if (!loggerThread.isAlive() && m_Instance != null) {
 			loggerThread = new TKOThread(m_Instance);
 			loggerThread.setPriority(Definitions.getPriority("logger"));
 		}
-		try
-		{
+		try {
 			System.out.println("Home dir: " + System.getProperty("user.dir"));
 			m_LogFile = new PrintWriter(new BufferedWriter(new FileWriter(directory + logFileName + ".txt", true)));
 			m_DataLogFile = new PrintWriter(new BufferedWriter(new FileWriter(directory + dataDumpFileName + ".csv", true)));
 
 			BufferedReader br = new BufferedReader(new FileReader(directory + dataDumpFileName + ".csv"));
-			if (br.readLine() == null)
-			{
+			if (br.readLine() == null) {
 				m_DataLogFile.println("DataDescriptor,TimeElap(ns),Value,AdditionalComment,Motor");
 			}
 			br.close();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (!loggerThread.isThreadRunning())
-		{
+		if (!loggerThread.isThreadRunning()) {
 			loggerThread.setThreadRunning(true);
 		}
 		System.out.println("Started logger task");
@@ -122,8 +110,7 @@ public class TKOLogger implements Runnable
 	public void stop() // TODO test abrupt program termination effects on log files
 	{
 		System.out.println("Stopping logger task");
-		if (loggerThread.isThreadRunning())
-		{
+		if (loggerThread.isThreadRunning()) {
 			loggerThread.setThreadRunning(false);
 		}
 		System.out.println("Logging flushing buffers");
@@ -132,8 +119,7 @@ public class TKOLogger implements Runnable
 		int dataBuffSize = m_DataBuffer.size();
 		int largest = Math.max(messBuffSize, dataBuffSize);
 
-		for (int i = 0; i < largest; i++)
-		{
+		for (int i = 0; i < largest; i++) {
 			long writeStartNS = System.nanoTime();
 			writeFromQueue();
 			totalOperations += (System.nanoTime() - writeStartNS);
@@ -146,37 +132,27 @@ public class TKOLogger implements Runnable
 		System.out.println("Stopped logger task");
 	}
 
-	public int getMessageBufferLength()
-	{
+	public int getMessageBufferLength() {
 		return m_MessageBuffer.size();
 	}
 
-	public void writeFromQueue()
-	{
-		try
-		{
+	private void writeFromQueue() {
+		try {
 			if (m_LogFile == null)
 				return;
-			if (!m_MessageBuffer.isEmpty())
-			{
+			if (!m_MessageBuffer.isEmpty()) {
 				String s = m_MessageBuffer.poll();
-				synchronized (TKOLogger.class)
-				{
+				synchronized (TKOLogger.class) {
 					m_LogFile.println(s);
 				}
 			}
-			if (!m_DataBuffer.isEmpty())
-			{
+			if (!m_DataBuffer.isEmpty()) {
 				String s = m_DataBuffer.poll();
-				dataBufferSize--;
-				synchronized (TKOLogger.class)
-				{
+				synchronized (TKOLogger.class) {
 					m_DataLogFile.println(s);
 				}
 			}
-		}
-		catch (NullPointerException e)
-		{
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 		// writeCounter++;
@@ -186,27 +162,21 @@ public class TKOLogger implements Runnable
 	}
 
 	@Override
-	public void run()
-	{
-		try
-		{
-			while (loggerThread.isThreadRunning())
-			{
+	public void run() {
+		try {
+			while (loggerThread.isThreadRunning()) {
 				writeFromQueue();
 				// System.out.println("LOGGER THREAD RAN!");
 
 				if (m_MessageBuffer.isEmpty() && m_DataBuffer.isEmpty()) // TODO make sure this doesnt slow down other threads
 				{
-					synchronized (loggerThread)
-					{
+					synchronized (loggerThread) {
 						loggerThread.wait(50);
 					}
 				}
 			}
 			System.out.println("Leaving run method in TKOLogger...");
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}

@@ -1,7 +1,6 @@
 package org.usfirst.frc.team1351.robot.atoms.auton;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,20 +52,20 @@ public class RewrittenDriveAtom extends Atom {
 			TKOHardware.getRightDrive().config_kP(0, p, 0);
 			TKOHardware.getRightDrive().config_kP(0, i, 0);
 			TKOHardware.getRightDrive().config_kP(0, d, 0);
-			
+
 			TKOHardware.getLeftDrive().setSensorPhase(false);
 			TKOHardware.getRightDrive().setSensorPhase(false);
 			TKOHardware.getLeftDrive().setInverted(true);
 			TKOHardware.getRightDrive().setInverted(false);
-			
+
 			TKOHardware.getLeftDrive().setSelectedSensorPosition(0, 0, 0);
 			TKOHardware.getRightDrive().setSelectedSensorPosition(0, 0, 0);
 			TKOHardware.getLeftDrive().configAllowableClosedloopError(0, 0, 0);
 			TKOHardware.getRightDrive().configAllowableClosedloopError(0, 0, 0);
-			
+
 			TKOHardware.getLeftDrive().configForwardSoftLimitEnable(false, 0);
 			TKOHardware.getRightDrive().configForwardSoftLimitEnable(false, 0);
-		
+
 		} catch (TKOException e) {
 			e.printStackTrace();
 		}

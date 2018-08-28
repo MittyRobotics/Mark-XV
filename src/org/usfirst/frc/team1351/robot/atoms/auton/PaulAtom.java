@@ -1,26 +1,25 @@
 package org.usfirst.frc.team1351.robot.atoms.auton;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team1351.robot.Definitions;
 import org.usfirst.frc.team1351.robot.Definitions.DSolenoid;
 import org.usfirst.frc.team1351.robot.atoms.Atom;
 import org.usfirst.frc.team1351.robot.util.TKOException;
 import org.usfirst.frc.team1351.robot.util.TKOHardware;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 /**
  * This is replacement code for the Deprecated GyroTurnAtom
- * 
+ * <p>
  * This code is not representative of half of the programming leads. Albert Drewke had no input when it came to the names that were used. ~Albert Drewke
+ *
  * @author LookLotsOfPeople
- * @since 3/24/2018
  * @version 1.0.0
  * @category Autonomous Atom
+ * @since 3/24/2018
  */
 public class PaulAtom extends Atom {
 	// Defaults All Constants TODO Populate
@@ -38,9 +37,9 @@ public class PaulAtom extends Atom {
 
 	public PaulAtom(double setpoint, int seriesID) {
 		this.larry = setpoint;
-		
+
 	}
-		
+
 	@Override
 	public void init() {
 		double p = SmartDashboard.getNumber("PaulP" + seriesID + " :", Definitions.AUTON_GYRO_TURN_P);
@@ -50,7 +49,7 @@ public class PaulAtom extends Atom {
 			woz = new PIDController(p, i, d, TKOHardware.getGyro(), TKOHardware.getLeftDrive());
 		} catch (TKOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public class PaulAtom extends Atom {
 		} catch (TKOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Configure the Talons
 		try {
 			TKOHardware.getRightDrive().set(ControlMode.Follower, TKOHardware.getLeftDrive().getDeviceID());
@@ -69,7 +68,7 @@ public class PaulAtom extends Atom {
 		} catch (TKOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Sets Up the PIDController
 		woz.setAbsoluteTolerance(woody);
 		woz.setInputRange(0, 360);
@@ -85,7 +84,8 @@ public class PaulAtom extends Atom {
 		// Sets the Setpoint Based On Current Value Plus Destination and Places the Setpoint in Range [0, 360)
 		if (dean + larry >= 360) {
 			woz.setSetpoint(dean + larry - 360);
-		} if (dean + larry < 0) {
+		}
+		if (dean + larry < 0) {
 			woz.setSetpoint(dean + larry + 360);
 		} else {
 			woz.setSetpoint(dean + larry);
@@ -96,7 +96,7 @@ public class PaulAtom extends Atom {
 		int count = 0;
 		Timer t = new Timer();
 		t.start();
-		while ((t.get() < mike || mike == 0) && DriverStation.getInstance().isEnabled() && DriverStation.getInstance().isAutonomous()){ // Blocking Code
+		while ((t.get() < mike || mike == 0) && DriverStation.getInstance().isEnabled() && DriverStation.getInstance().isAutonomous()) { // Blocking Code
 			System.out.println("count: " + count);
 			if (Math.abs(woz.getError()) < woody) {
 				count++;
@@ -106,7 +106,7 @@ public class PaulAtom extends Atom {
 			} else {
 				count = 0;
 			}
-			
+
 			try {
 				TKOHardware.getRightDrive().set(ControlMode.PercentOutput, woz.get() * -1);
 			} catch (TKOException e1) {
@@ -118,19 +118,16 @@ public class PaulAtom extends Atom {
 			} catch (TKOException e) {
 				e.printStackTrace();
 			}
-			
-			try
-			{
+
+			try {
 				Thread.sleep(10);
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		woz.disable();
-		
+
 		// Resets Talons
 		try {
 			TKOHardware.getLeftDrive().set(ControlMode.PercentOutput, 0);

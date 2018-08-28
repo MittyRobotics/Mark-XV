@@ -1,24 +1,23 @@
 package org.usfirst.frc.team1351.robot.atoms.auton;
 
-import org.usfirst.frc.team1351.robot.atoms.Atom;
-import org.usfirst.frc.team1351.robot.util.TKOException;
-import org.usfirst.frc.team1351.robot.util.TKOHardware;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import org.usfirst.frc.team1351.robot.atoms.Atom;
+import org.usfirst.frc.team1351.robot.util.TKOException;
+import org.usfirst.frc.team1351.robot.util.TKOHardware;
 
 /**
  * This is replacement code for the Deprecated GyroTurnAtom
- * 
+ * <p>
  * This code is not representative of half of the programming leads. Albert Drewke had no input when it came to the names that were used. ~Albert Drewke
+ *
  * @author LookLotsOfPeople
- * @since 3/24/2018
  * @version 1.0.0
  * @category Autonomous Atom
+ * @since 3/24/2018
  */
 public class AshAtom extends Atom {
 	// Defaults All Constants TODO Populate
@@ -40,8 +39,8 @@ public class AshAtom extends Atom {
 		SmartDashboard.putNumber("AshI" + seriesID + " :", defaultI);
 		SmartDashboard.putNumber("AshD" + seriesID + " :", defaultD);
 	}
-	
-	
+
+
 	@Override
 	public void init() {
 		double p = SmartDashboard.getNumber("AshP" + seriesID + " :", defaultP);
@@ -51,7 +50,7 @@ public class AshAtom extends Atom {
 			control = new PIDController(p, i, d, null, TKOHardware.getLeftDrive());
 		} catch (TKOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class AshAtom extends Atom {
 		} catch (TKOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Configure the Talons
 		try {
 			TKOHardware.getRightDrive().set(ControlMode.Follower, TKOHardware.getLeftDrive().getDeviceID());
@@ -70,7 +69,7 @@ public class AshAtom extends Atom {
 		} catch (TKOException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Sets Up the PIDController
 		control.setAbsoluteTolerance(threshold);
 		control.setInputRange(0, 360);
@@ -88,7 +87,7 @@ public class AshAtom extends Atom {
 		control.enable();
 		int count = 0;
 		Timer t = new Timer();
-		while (!(t.get() >= timeout && t.get() != 0) && DriverStation.getInstance().isEnabled()){ // Blocking Code
+		while (!(t.get() >= timeout && t.get() != 0) && DriverStation.getInstance().isEnabled()) { // Blocking Code
 			if (Math.abs(control.getError()) < threshold) {
 				count++;
 				if (count > 1000) {
@@ -97,7 +96,7 @@ public class AshAtom extends Atom {
 			} else {
 				count = 0;
 			}
-			
+
 			try {
 				TKOHardware.getRightDrive().set(ControlMode.PercentOutput, control.get() * -1);
 			} catch (TKOException e1) {
@@ -111,7 +110,7 @@ public class AshAtom extends Atom {
 			}
 		}
 		control.disable();
-		
+
 		// Resets Talons
 		try {
 			TKOHardware.getLeftDrive().set(ControlMode.PercentOutput, 0);

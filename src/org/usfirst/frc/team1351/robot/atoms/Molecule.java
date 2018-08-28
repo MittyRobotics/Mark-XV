@@ -1,55 +1,40 @@
 package org.usfirst.frc.team1351.robot.atoms;
 
-import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.Timer;
 
-public class Molecule
-{
+import java.util.ArrayList;
 
-	ArrayList<Atom> chain = new ArrayList<Atom>();
+public class Molecule {
+	private ArrayList<Atom> chain = new ArrayList<>();
 
-	public Molecule()
-	{
-
-	}
-
-	public void add(Atom a)
-	{
+	public void add(Atom a) {
 		chain.add(a);
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		chain.clear();
 	}
 
 	/**
 	 * DO NOT CALL INIT
-	 * 
+	 *
 	 * @deprecated
 	 */
 	@SuppressWarnings("unused")
-	private void init()
-	{
-		for (Atom a : chain)
-		{
+	private void init() {
+		for (Atom a : chain) {
 			a.init();
 		}
 	}
 
-	public void run()
-	{
-		for (Atom a : chain)
-		{
+	public void run() {
+		for (Atom a : chain) {
 			a.execute();
 		}
 	}
 
-	public void initAndRun()
-	{
-		for (Atom a : chain)
-		{
+	public void initAndRun() {
+		for (Atom a : chain) {
 			a.init();
 			a.execute();
 			Timer.delay(0.5);

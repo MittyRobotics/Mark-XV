@@ -8,7 +8,7 @@ import org.usfirst.frc.team1351.robot.util.TKOHardware;
 
 /**
  * @author Louis
- * 
+ * <p>
  * Last edited by Tiina Otala, 3/17/2018
  */
 @Deprecated
@@ -17,24 +17,21 @@ public class LiftAtom extends Atom {
 	int setting; // 1 = switch, 2 = scale
 	double p, i, d;
 	double distance;
-	
-//	Ultrasonic liftUS = new Ultrasonic(0, 1, Ultrasonic.Unit.kInches);
+
+	//	Ultrasonic liftUS = new Ultrasonic(0, 1, Ultrasonic.Unit.kInches);
 	@Deprecated
-	public LiftAtom (int distance) {
+	public LiftAtom(int distance) {
 		p = SmartDashboard.getNumber("Lift P: ", 0f);
 		i = SmartDashboard.getNumber("Lift I: ", 0f);
 		d = SmartDashboard.getNumber("Lift D: ", 0f);
 		this.distance = distance;
 	}
-	
+
 	@Deprecated
-	public void init () {
-		try
-		{
+	public void init() {
+		try {
 			TKOHardware.autonInit(p, i, d);
-		}
-		catch (TKOException e)
-		{
+		} catch (TKOException e) {
 			e.printStackTrace();
 			System.out.println("Talon initialization failed!");
 		}

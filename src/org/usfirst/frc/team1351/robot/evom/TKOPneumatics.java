@@ -9,89 +9,67 @@ import org.usfirst.frc.team1351.robot.util.TKOException;
 import org.usfirst.frc.team1351.robot.util.TKOHardware;
 import org.usfirst.frc.team1351.robot.util.TKOThread;
 
-public class TKOPneumatics implements Runnable
-{
-	public TKOThread pneuThread = null;
+public class TKOPneumatics implements Runnable {
 	private static TKOPneumatics m_Instance = null;
+	public TKOThread pneuThread = null;
 
-	protected TKOPneumatics()
-	{
-		try
-		{
+	private TKOPneumatics() {
+		try {
 			TKOHardware.getCompressor().start();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static synchronized TKOPneumatics getInstance()
-	{
-		if (TKOPneumatics.m_Instance == null)
-		{
+	public static synchronized TKOPneumatics getInstance() {
+		if (TKOPneumatics.m_Instance == null) {
 			m_Instance = new TKOPneumatics();
 			m_Instance.pneuThread = new TKOThread(m_Instance);
 		}
 		return m_Instance;
 	}
 
-	public synchronized void start()
-	{
+	public synchronized void start() {
 		System.out.println("Starting pneumatics task");
-		if (!pneuThread.isAlive() && m_Instance != null)
-		{
+		if (!pneuThread.isAlive() && m_Instance != null) {
 			pneuThread = new TKOThread(m_Instance);
 			pneuThread.setPriority(Definitions.getPriority("pneumatics"));
 		}
 		if (!pneuThread.isThreadRunning())
 			pneuThread.setThreadRunning(true);
 
-		try
-		{
+		try {
 			//start w/ compressor on, intake up (safety's sake) and loose
 			TKOHardware.getCompressor().start();
 			TKOHardware.getDSolenoid(DSolenoid.UPDOWN).set(Definitions.INTAKE_LIFT_DOWN);
 			TKOHardware.setArmsHardHold();
-		}
-		catch (TKOException e)
-		{
+		} catch (TKOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public synchronized void stop()
-	{
+	public synchronized void stop() {
 		System.out.println("Stopping pneumatics task");
 		if (pneuThread.isThreadRunning())
 			pneuThread.setThreadRunning(false);
-		try
-		{
+		try {
 			TKOHardware.getCompressor().stop();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("Stopped pneumatics task");
 	}
 
 	@Override
-	public void run()
-	{
-		try
-		{
-			while (pneuThread.isThreadRunning())
-			{
-				
-				synchronized (pneuThread)
-				{
+	public void run() {
+		try {
+			while (pneuThread.isThreadRunning()) {
+
+				synchronized (pneuThread) {
 					pneuThread.wait(20);
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

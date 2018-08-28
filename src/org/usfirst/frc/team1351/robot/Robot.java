@@ -1,53 +1,32 @@
- //Last edited by Tiina Otala
+//Last edited by Tiina Otala
 //1/9/2018
 
 package org.usfirst.frc.team1351.robot;
 
-import org.usfirst.frc.team1351.robot.Definitions.DInput;
-import org.usfirst.frc.team1351.robot.Definitions.DSolenoid;
-import org.usfirst.frc.team1351.robot.atoms.Molecule;
-import org.usfirst.frc.team1351.robot.atoms.auton.DriveAtom;
-import org.usfirst.frc.team1351.robot.atoms.auton.GyroTurnAtom;
-import org.usfirst.frc.team1351.robot.atoms.auton.LiftAtom;
-import org.usfirst.frc.team1351.robot.atoms.auton.PaulAtom;
-import org.usfirst.frc.team1351.robot.atoms.auton.RewrittenDriveAtom;
-import org.usfirst.frc.team1351.robot.drive.TKODrive;	
-import org.usfirst.frc.team1351.robot.evom.TKOPneumatics;
-import org.usfirst.frc.team1351.robot.evom.TKOWinch;
-import org.usfirst.frc.team1351.robot.logger.TKOLogger;
-import org.usfirst.frc.team1351.robot.evom.TKOIntake;
-import org.usfirst.frc.team1351.robot.evom.TKOLift;
-import org.usfirst.frc.team1351.robot.util.TKOException;
-//import org.usfirst.frc.team1351.robot.evom.TKOShooter;
-import org.usfirst.frc.team1351.robot.util.TKOHardware;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team1351.robot.Definitions.DSolenoid;
+import org.usfirst.frc.team1351.robot.atoms.auton.DriveAtom;
+import org.usfirst.frc.team1351.robot.atoms.auton.PaulAtom;
+import org.usfirst.frc.team1351.robot.drive.TKODrive;
+import org.usfirst.frc.team1351.robot.evom.TKOIntake;
+import org.usfirst.frc.team1351.robot.evom.TKOLift;
+import org.usfirst.frc.team1351.robot.evom.TKOPneumatics;
+import org.usfirst.frc.team1351.robot.util.TKOException;
+import org.usfirst.frc.team1351.robot.util.TKOHardware;
 
-public class Robot extends SampleRobot
-{
-	// I changed this from <String> to <Object> because it didn't work with <String> fix if necessary
-	SendableChooser<Integer> autonChooser = new SendableChooser<>();
-	SendableChooser<Integer> objectiveChooser = new SendableChooser<>();
-	UsbCamera cube;
-
-	public Robot()
-	{
-		// Don't put stuff here, use robotInit();
-	}
+public class Robot extends SampleRobot {
+	private SendableChooser<Integer> autonChooser = new SendableChooser<>();
+	private SendableChooser<Integer> objectiveChooser = new SendableChooser<>();
+	private UsbCamera cube;
 
 	@Override
-	public void robotInit()
-	{
+	public void robotInit() {
 		System.out.println("-----WELCOME TO MarkXV2018 : WALL-E -----");
 		System.out.println("-----SYSTEM BOOT: " + Timer.getFPGATimestamp() + "-----");
 		SmartDashboard.putNumber("Lift P: ", Definitions.LIFT_P);
@@ -67,42 +46,41 @@ public class Robot extends SampleRobot
 
 		SmartDashboard.putNumber("Left Intake Speed", Definitions.INTAKE_LEFT_SPEED);
 		SmartDashboard.putNumber("Right Intake Speed", Definitions.INTAKE_RIGHT_SPEED);
-		
+
 		SmartDashboard.putNumber("coolP", Definitions.AUTON_DRIVE_P);
 		SmartDashboard.putNumber("coolI", Definitions.AUTON_DRIVE_I);
 		SmartDashboard.putNumber("coolD", Definitions.AUTON_DRIVE_D);
-		
+
 		SmartDashboard.putNumber("PaulP" + 0 + " :", Definitions.AUTON_GYRO_TURN_P);
 		SmartDashboard.putNumber("PaulI" + 0 + " :", Definitions.AUTON_GYRO_TURN_I);
-		SmartDashboard.putNumber("PaulD" + 0 + " :", Definitions.AUTON_GYRO_TURN_D); 
-		
-		autonChooser.addDefault("Left", new Integer(0));
-		autonChooser.addObject("Center", new Integer(1));
-		autonChooser.addObject("Right", new Integer(2));
+		SmartDashboard.putNumber("PaulD" + 0 + " :", Definitions.AUTON_GYRO_TURN_D);
+
+		autonChooser.addDefault("Left", 0);
+		autonChooser.addObject("Center", 1);
+		autonChooser.addObject("Right", 2);
 		SmartDashboard.putData("Auto modes", autonChooser);
-		
-		objectiveChooser.addDefault("Crossing line", new Integer(0));
-		objectiveChooser.addObject("Switch", new Integer(1));
-		objectiveChooser.addObject("Scale", new Integer(2));
+
+		objectiveChooser.addDefault("Crossing line", 0);
+		objectiveChooser.addObject("Switch", 1);
+		objectiveChooser.addObject("Scale", 2);
 		SmartDashboard.putData("Objective", objectiveChooser);
-		
+
 		SmartDashboard.putNumber("Wait Time: ", 0);
 		TKOHardware.initObjects();
-		
+
 		//TODO: FIX BEFORE MATCH!!!
 		cube = CameraServer.getInstance().startAutomaticCapture("cube", 0);
 		cube.setResolution(360, 280);
 		cube.setFPS(30);
-		
-		
+
+
 		TKOLift.getInstance().begin();
 
 		System.out.println("Initialization finished");
 	}
 
 	@Override
-	public void autonomous()
-	{
+	public void autonomous() {
 		/*
 		DriveAtom a = new DriveAtom(120, 0, 0);
 		a.init();
@@ -133,7 +111,7 @@ public class Robot extends SampleRobot
 			e.printStackTrace();
 		}
 		*/
-		
+
 		try {
 			TKOHardware.getDSolenoid(DSolenoid.UPDOWN).set(Value.kReverse);
 			TKOLift.getInstance().setElon(0);
@@ -280,7 +258,7 @@ public class Robot extends SampleRobot
 				break;
 		}
 		*/
-		
+
 		//CHEATY FIX
 		/*
 		TKOLift.getInstance().setElon(48);
@@ -306,9 +284,8 @@ public class Robot extends SampleRobot
 			e.printStackTrace();
 		}
 		*/
-		
-		
-		
+
+
 		//OLD AUTON
 		/*		
 //		String pos = "LLL";
@@ -355,7 +332,7 @@ public class Robot extends SampleRobot
 
 			molecule.add(new GyroTurnAtom(90));
 			*/
-			//Doing literally nothing for 1st practice match.
+		//Doing literally nothing for 1st practice match.
 		/*
 		}
 		else if (autonChooser.getSelected().equals(0) && objectiveChooser.getSelected().equals(1))
@@ -509,8 +486,7 @@ public class Robot extends SampleRobot
 	}
 
 	@Override
-	public void operatorControl()
-	{
+	public void operatorControl() {
 		/*
 		try
 		{
@@ -527,22 +503,18 @@ public class Robot extends SampleRobot
 		TKOIntake.getInstance().start();
 		TKOLift.getInstance().tele();
 		TKOPneumatics.getInstance().start();
-		while (isOperatorControl() && isEnabled())
-		{
+		while (isOperatorControl() && isEnabled()) {
 			Timer.delay(0.05); // wait for a motor update time
 		}
 
-		try
-		{
+		try {
 			TKOIntake.getInstance().stop();
 			TKOIntake.getInstance().intakeThread.join();
 			TKODrive.getInstance().stop();
 			TKODrive.getInstance().driveThread.join();
 			TKOPneumatics.getInstance().stop();
 			TKOPneumatics.getInstance().pneuThread.join();
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		// TKOIntake.getInstance().stop();
@@ -552,18 +524,15 @@ public class Robot extends SampleRobot
 	@Override
 	public void test() {
 		TKOLift.getInstance().setElon(84);
-		DriveAtom d = new DriveAtom(135,0,0);
+		DriveAtom d = new DriveAtom(135, 0, 0);
 		d.init();
 		d.execute();
 		PaulAtom p = new PaulAtom(-90, 0);
 		p.init();
 		p.execute();
-		try
-		{
+		try {
 			TKOHardware.setArmsRelease();
-		}
-		catch (TKOException e)
-		{
+		} catch (TKOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -571,9 +540,8 @@ public class Robot extends SampleRobot
 		f.init();
 		f.execute();
 		TKOLift.getInstance().setElon(48);
-		DriveAtom h = new DriveAtom(-130,0,0);
+		DriveAtom h = new DriveAtom(-130, 0, 0);
 		h.init();
 		h.execute();
-		
 	}
 }

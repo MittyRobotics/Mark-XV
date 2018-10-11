@@ -1,8 +1,5 @@
 package org.usfirst.frc.team1351.robot.evom;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team1351.robot.Definitions;
 import org.usfirst.frc.team1351.robot.Definitions.DSolenoid;
 import org.usfirst.frc.team1351.robot.util.TKOHardware;

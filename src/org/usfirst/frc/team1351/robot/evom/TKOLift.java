@@ -1,10 +1,5 @@
 package org.usfirst.frc.team1351.robot.evom;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team1351.robot.Definitions;
 import org.usfirst.frc.team1351.robot.Definitions.DInput;
 import org.usfirst.frc.team1351.robot.util.TKOException;

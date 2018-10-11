@@ -1,8 +1,5 @@
 package org.usfirst.frc.team1351.robot.drive;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import org.usfirst.frc.team1351.robot.Definitions;
 import org.usfirst.frc.team1351.robot.Definitions.DSolenoid;
 import org.usfirst.frc.team1351.robot.util.TKOException;

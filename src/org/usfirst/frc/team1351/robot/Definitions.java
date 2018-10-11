@@ -141,39 +141,6 @@ public class Definitions {
 	//TODO: update
 	public static final int NUM_ENCODERS = 0;
 
-	//--------------------------------------------------------------------------
-
-	//H A R D W A R E
-	public static final int NUM_XBOX = 1; // `/4`/ ! |-|45 4|\\| ><|30>< |=|2!99!|\\|9 |D|_4`/5747!0|\\| |\\|3\\/\\/|35
-	public static final int NUM_JOYSTICKS = 2;
-	public static final int NUM_DINPUTS = 4;
-	public static final Port GYRO_SPI_PORT = Port.kOnboardCS0;
-	public static final int GYRO_ANALOG_CHANNEL = 1;
-	//PNEUMATICS
-	//TODO: Update w/ testing
-	public static final int PCM_ID_MAIN = 0;
-	public static final int PCM_ID_ADD = 1;
-	public static final int NUM_DSOLENOIDS = 5; //2 for arms, 1 for up/down, 1 for shift, 1 for ratchet
-	//Values
-	public static final DoubleSolenoid.Value SHIFTER_LOW = DoubleSolenoid.Value.kForward; //reverse on SC
-	public static final DoubleSolenoid.Value SHIFTER_HIGH = DoubleSolenoid.Value.kReverse;
-	public static final DoubleSolenoid.Value INTAKE_LIFT_UP = DoubleSolenoid.Value.kForward;
-	public static final DoubleSolenoid.Value INTAKE_LIFT_DOWN = DoubleSolenoid.Value.kReverse;
-	//IDs
-	//All the As (forward channel) are "on" and all the Bs (reverse channel) are "off"
-	public static final int SHIFTER_A = 6;
-	public static final int SHIFTER_B = 7;
-	public static final int ARM60_A = 0;
-	public static final int ARM60_B = 1;
-	public static final int ARM40_A = 2; //2ND ROBOT: 2 on main PCM
-	public static final int ARM40_B = 3; //2ND ROBOT: 3 on main PCM
-	public static final int UPDOWN_A = 4;
-	public static final int UPDOWN_B = 5;
-	public static final int RATCHET_A = 0; //2ND ROBOT: 0 on additional PCM
-	public static final int RATCHET_B = 1; //2ND ROBOT: 1 on additional PCM
-	//T H R E A D
-	//DEFINITIONS
-	public static ArrayList<String> threadNames = new ArrayList<String>();
 	public static HashMap<String, Integer> threadPriorities;
 
 	//--------------------------------------------------------------------------

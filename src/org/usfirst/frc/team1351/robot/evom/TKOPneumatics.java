@@ -1,6 +1,3 @@
-// Last edited by Tiina Otala
-// on 3/3/2018
-
 package org.usfirst.frc.team1351.robot.evom;
 
 import org.usfirst.frc.team1351.robot.Definitions;
